@@ -1,0 +1,164 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+model User {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  passwordHash String
+  name         String
+  phone        String?
+  role         Role      @default(USER)
+  addresses    Address[]
+  orders       Order[]
+  reviews      Review[]
+  createdAt    DateTime  @default(now())
+}
+
+model Address {
+  id        String   @id @default(cuid())
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name      String
+  line1     String
+  line2     String?
+  city      String
+  county    String?
+  postcode  String
+  country   String   @default("GB")
+  isDefault Boolean  @default(false)
+}
+
+model Category {
+  id          String    @id @default(cuid())
+  name        String
+  slug        String    @unique
+  description String
+  imageUrl    String
+  products    Product[]
+}
+
+model Product {
+  id               String             @id @default(cuid())
+  name             String
+  slug             String             @unique
+  sku              String             @unique
+  categoryId       String
+  category         Category           @relation(fields: [categoryId], references: [id])
+  description      String
+  shortDescription String
+  price            Int
+  stock            Int                @default(0)
+  images           String[]
+  featured         Boolean            @default(false)
+  ingredients      ProductIngredient[]
+  reviews          Review[]
+  cartItems        CartItem[]
+  orderItems       OrderItem[]
+  createdAt        DateTime           @default(now())
+}
+
+model Ingredient {
+  id              String             @id @default(cuid())
+  name            String
+  historicalSource String
+  originRegion    String
+  skinBenefit     String
+  imageUrl        String?
+  products        ProductIngredient[]
+}
+
+model ProductIngredient {
+  productId    String
+  ingredientId String
+  isFeatured   Boolean    @default(false)
+  product      Product    @relation(fields: [productId], references: [id], onDelete: Cascade)
+  ingredient   Ingredient @relation(fields: [ingredientId], references: [id], onDelete: Cascade)
+
+  @@id([productId, ingredientId])
+}
+
+model Review {
+  id               String   @id @default(cuid())
+  productId        String
+  product          Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  userId           String?
+  user             User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  guestName        String?
+  rating           Int
+  comment          String
+  verifiedPurchase Boolean  @default(false)
+  createdAt        DateTime @default(now())
+}
+
+model DeliveryZone {
+  id           String   @id @default(cuid())
+  name         String
+  regions      String[]
+  minDays      Int
+  maxDays      Int
+  shippingCost Int
+  orders       Order[]
+}
+
+model Order {
+  id                String       @id @default(cuid())
+  orderRef          String       @unique
+  userId            String?
+  user              User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
+  guestEmail        String?
+  guestName         String?
+  status            OrderStatus  @default(PENDING)
+  paymentMethod     String       @default("COD")
+  items             OrderItem[]
+  shippingAddress   Json
+  deliveryZoneId    String
+  deliveryZone      DeliveryZone @relation(fields: [deliveryZoneId], references: [id])
+  estimatedDelivery String
+  subtotal          Int
+  shippingCost      Int
+  total             Int
+  notes             String?
+  createdAt         DateTime     @default(now())
+}
+
+model OrderItem {
+  id              String  @id @default(cuid())
+  orderId         String
+  order           Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId       String
+  product         Product @relation(fields: [productId], references: [id])
+  productName     String
+  qty             Int
+  priceAtPurchase Int
+}
+
+model CartItem {
+  id        String   @id @default(cuid())
+  sessionId String
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  qty       Int
+  createdAt DateTime @default(now())
+
+  @@unique([sessionId, productId])
+}
