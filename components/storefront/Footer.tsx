@@ -6,7 +6,7 @@ export function Footer() {
       <div className="container-content py-12 grid grid-cols-1 md:grid-cols-3 gap-8">
         {/* Brand */}
         <div className="md:col-span-2">
-          <p className="font-serif text-xl font-semibold mb-3">Aarrikka</p>
+          <p className="font-serif text-xl font-semibold mb-3">Aarikka Elixirs</p>
           <p className="text-white/70 text-sm leading-relaxed max-w-xs">
             Ancient skincare wisdom, rigorously sourced and made for modern skin.
             Every formulation is traced to its historical origin.
@@ -35,7 +35,7 @@ export function Footer() {
 
       <div className="border-t border-white/10">
         <div className="container-content py-4 flex flex-col sm:flex-row justify-between items-center gap-2 text-xs text-white/40">
-          <span>© {new Date().getFullYear()} Aarrikka. All rights reserved.</span>
+          <span>© {new Date().getFullYear()} Aarikka Elixirs. All rights reserved.</span>
           <span>Formulated from ancient wisdom. Made in the UK.</span>
         </div>
       </div>

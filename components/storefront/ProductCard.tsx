@@ -40,7 +40,7 @@ export function ProductCard({ product }: ProductCardProps) {
       </div>
 
       <div className="space-y-1">
-        <p className="text-xs text-brand-sage uppercase tracking-wide">Aarrikka</p>
+        <p className="text-xs text-brand-sage uppercase tracking-wide">Aarikka Elixirs</p>
         <h3 className="text-brand-charcoal font-medium text-sm leading-snug group-hover:text-brand-green transition-colors">
           {product.name}
         </h3>

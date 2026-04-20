@@ -29,7 +29,7 @@ export default async function CategoryPage({ params }: Props) {
       {/* Header */}
       <div className="bg-brand-green text-white py-16">
         <div className="container-content">
-          <p className="text-brand-gold text-xs uppercase tracking-widest mb-2">Aarrikka</p>
+          <p className="text-brand-gold text-xs uppercase tracking-widest mb-2">Aarikka Elixirs</p>
           <h1 className="font-serif text-4xl md:text-5xl font-semibold mb-3">{category.name}</h1>
           <p className="text-white/70 max-w-xl">{category.description}</p>
         </div>

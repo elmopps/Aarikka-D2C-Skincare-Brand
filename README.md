@@ -1,4 +1,4 @@
-# Aarrikka — Ancient Skincare, Modern Skin
+# Aarikka Elixirs — Ancient Skincare, Modern Skin
 
 A full-stack D2C skincare e-commerce website built with Next.js 14, PostgreSQL (Supabase), Prisma, and NextAuth. Live at **[aarikka.vercel.app](https://aarikka.vercel.app)**.
 
@@ -8,7 +8,7 @@ A full-stack D2C skincare e-commerce website built with Next.js 14, PostgreSQL (
 
 ## What This Is
 
-Aarrikka is a premium organic skincare brand whose differentiator is authenticity — every formulation is traced to a named historical text (the Charaka Samhita, the Ebers Papyrus, the Ashtanga Hridayam) rather than vague "inspired by nature" language. The target customer is a UK professional aged 28–45 who has been burned by greenwashing and researches before they buy.
+Aarikka Elixirs is a premium organic skincare brand whose differentiator is authenticity — every formulation is traced to a named historical text (the Charaka Samhita, the Ebers Papyrus, the Ashtanga Hridayam) rather than vague "inspired by nature" language. The target customer is a UK professional aged 28–45 who has been burned by greenwashing and researches before they buy.
 
 The website is built to match that positioning: lead with evidence, not aesthetics. Every product page shows the ingredient's historical source, origin region, and dermatologist-reviewed skin benefit. The brand copy is specific, not adjective-heavy.
 

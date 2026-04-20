@@ -8,12 +8,12 @@ async function main() {
 
   // ── Admin user ──────────────────────────────────────────────
   await prisma.user.upsert({
-    where: { email: 'admin@aarrikka.com' },
+    where: { email: 'admin@aarikka-elixirs.com' },
     update: {},
     create: {
-      email:        'admin@aarrikka.com',
+      email:        'admin@aarikka-elixirs.com',
       name:         'Admin',
-      passwordHash: await bcrypt.hash('aarrikka-admin-2024', 12),
+      passwordHash: await bcrypt.hash('aarikka-elixirs-admin-2024', 12),
       role:         'ADMIN',
     },
   })
@@ -325,8 +325,8 @@ async function main() {
 
   console.log('\n✅ Seed complete!')
   console.log('\nAdmin login:')
-  console.log('  Email:    admin@aarrikka.com')
-  console.log('  Password: aarrikka-admin-2024\n')
+  console.log('  Email:    admin@aarikka-elixirs.com')
+  console.log('  Password: aarikka-elixirs-admin-2024\n')
 }
 
 main()

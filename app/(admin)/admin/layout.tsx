@@ -14,7 +14,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       {/* Sidebar */}
       <aside className="w-56 bg-brand-green text-white flex flex-col">
         <div className="p-5 border-b border-white/10">
-          <Link href="/" className="font-serif text-lg font-semibold">Aarrikka</Link>
+          <Link href="/" className="font-serif text-lg font-semibold">Aarikka Elixirs</Link>
           <p className="text-xs text-white/50 mt-0.5">Admin Panel</p>
         </div>
         <nav className="p-3 flex flex-col gap-1 flex-1">

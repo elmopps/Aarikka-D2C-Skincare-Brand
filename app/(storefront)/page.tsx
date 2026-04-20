@@ -9,7 +9,7 @@ import { StarRating } from '@/components/ui/star-rating'
 import { ArrowRight, Quote } from 'lucide-react'
 
 export const metadata: Metadata = {
-  title: 'Aarrikka — Ancient Skincare, Modern Skin',
+  title: 'Aarikka Elixirs — Ancient Skincare, Modern Skin',
 }
 
 async function getData() {
@@ -46,7 +46,7 @@ const testimonials = [
   {
     name:   'Priya M., Marketing Director',
     rating: 5,
-    text:   'I\'ve tried every premium organic brand. Aarrikka is the first one that actually tells me *why* an ingredient works — not just that it\'s "natural". The Kumkumadi oil has transformed my skin.',
+    text:   'I\'ve tried every premium organic brand. Aarikka Elixirs is the first one that actually tells me *why* an ingredient works — not just that it\'s "natural". The Kumkumadi oil has transformed my skin.',
   },
   {
     name:   'James T., Consultant',
@@ -107,13 +107,13 @@ export default async function HomePage() {
       <section className="section-padding bg-white">
         <div className="container-content">
           <div className="max-w-2xl mx-auto text-center mb-12">
-            <p className="text-brand-gold text-xs uppercase tracking-widest mb-3">Why Aarrikka?</p>
+            <p className="text-brand-gold text-xs uppercase tracking-widest mb-3">Why Aarikka Elixirs?</p>
             <h2 className="font-serif text-4xl text-brand-green mb-4">
               Not another "organic" brand.
             </h2>
             <p className="text-brand-charcoal/70 leading-relaxed">
               The organic skincare market is full of vague claims. "Natural", "clean", "inspired by nature."
-              We built Aarrikka because we were tired of being sold adjectives. Here's what we actually do differently.
+              We built Aarikka Elixirs because we were tired of being sold adjectives. Here's what we actually do differently.
             </p>
           </div>
 
@@ -154,7 +154,7 @@ export default async function HomePage() {
                   each one clinically reviewed to confirm it's safe and effective for contemporary skin.
                 </p>
                 <p>
-                  The result is Aarrikka: a skincare range where every product has a verifiable origin,
+                  The result is Aarikka Elixirs: a skincare range where every product has a verifiable origin,
                   an honest ingredient list, and a genuine reason to exist.
                 </p>
               </div>
@@ -167,7 +167,7 @@ export default async function HomePage() {
                 { year: '1550 BCE',       event: 'Ebers Papyrus describes black seed as a universal remedy' },
                 { year: '7th Century CE', event: 'Ashtanga Hridayam codifies the Kumkumadi tailam formula' },
                 { year: '16th Century',   event: 'Bhavaprakasa Nighantu classifies bakuchiol as skin-restoring' },
-                { year: 'Today',          event: 'Aarrikka translates these texts into modern, certified formulations' },
+                { year: 'Today',          event: 'Aarikka Elixirs translates these texts into modern, certified formulations' },
               ].map(item => (
                 <div key={item.year} className="flex gap-4">
                   <div className="flex flex-col items-center">

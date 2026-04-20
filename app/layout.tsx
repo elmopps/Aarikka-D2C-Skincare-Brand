@@ -18,8 +18,8 @@ const playfair = Playfair_Display({
 
 export const metadata: Metadata = {
   title: {
-    default:  'Aarrikka — Ancient Skincare, Modern Skin',
-    template: '%s | Aarrikka',
+    default:  'Aarikka Elixirs — Ancient Skincare, Modern Skin',
+    template: '%s | Aarikka Elixirs',
   },
   description:
     'Premium organic skincare formulated from ancient texts and household traditions. Every ingredient traced to its historical source.',
@@ -27,8 +27,8 @@ export const metadata: Metadata = {
   openGraph: {
     type:        'website',
     locale:      'en_GB',
-    siteName:    'Aarrikka',
-    title:       'Aarrikka — Ancient Skincare, Modern Skin',
+    siteName:    'Aarikka Elixirs',
+    title:       'Aarikka Elixirs — Ancient Skincare, Modern Skin',
     description: 'Premium organic skincare formulated from ancient texts and household traditions.',
   },
 }

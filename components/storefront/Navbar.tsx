@@ -35,7 +35,7 @@ export function Navbar() {
       <div className="container-content flex items-center justify-between h-16">
         {/* Logo */}
         <Link href="/" className={cn('font-serif text-xl font-semibold tracking-wide', scrolled ? 'text-brand-green' : 'text-white')}>
-          Aarrikka
+          Aarikka Elixirs
         </Link>
 
         {/* Desktop nav */}

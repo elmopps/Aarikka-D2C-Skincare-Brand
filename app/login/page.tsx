@@ -34,7 +34,7 @@ export default function LoginPage() {
     <div className="min-h-screen bg-brand-cream flex items-center justify-center px-4">
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
-          <Link href="/" className="font-serif text-2xl font-semibold text-brand-green">Aarrikka</Link>
+          <Link href="/" className="font-serif text-2xl font-semibold text-brand-green">Aarikka Elixirs</Link>
           <p className="text-brand-sage text-sm mt-1">Sign in to continue</p>
         </div>
 
