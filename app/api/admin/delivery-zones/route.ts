@@ -3,7 +3,7 @@ import { prisma } from '@/lib/prisma'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 
-function isAdmin(session: Awaited<ReturnType<typeof getServerSession>>) {
+function isAdmin(session: any) {
   return (session?.user as { role?: string })?.role === 'ADMIN'
 }
 
