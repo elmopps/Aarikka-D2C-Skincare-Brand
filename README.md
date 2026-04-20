@@ -2,6 +2,8 @@
 
 A full-stack D2C skincare e-commerce website built with Next.js 14, PostgreSQL (Supabase), Prisma, and NextAuth. Live at **[aarikka.vercel.app](https://aarikka.vercel.app)**.
 
+> **Course project** — Built as a hands-on exercise for the [Advanced AI Product Management for PMs](https://www.pmcurve.com/program/advanced-ai-for-pms) program by PMCurve. A 12-week course designed for Product Managers to learn how to build and lead AI products — from foundational concepts to deployment. This project covers the "build it yourself" module: taking a product idea from requirements all the way to a live, working website.
+
 ---
 
 ## What This Is
@@ -20,10 +22,10 @@ This repository is V1 — a complete, deployable storefront with cart, checkout,
 |---|---|---|
 | Framework | Next.js 14 (App Router) | SSR + SSG + API routes in one repo |
 | Language | TypeScript | End-to-end type safety |
-| Database | PostgreSQL via Supabase | Managed hosting, PgBouncer pooling, free tier |
+| Database | PostgreSQL via Supabase | Managed hosting, connection pooling, free tier |
 | ORM | Prisma | Schema-as-code, type-safe queries |
 | Auth | NextAuth.js (Credentials) | Email/password with role-based admin guard |
-| Styling | Tailwind CSS | Custom design tokens, no UI kit dependencies |
+| Styling | Tailwind CSS | Custom design tokens, no heavy UI kit needed |
 | Postcode API | postcodes.io | Free UK postcode → region lookup, no API key needed |
 | Hosting | Vercel + Supabase | Purpose-built for Next.js; free tiers sufficient for V1 |
 
@@ -32,7 +34,7 @@ This repository is V1 — a complete, deployable storefront with cart, checkout,
 ## Features
 
 ### Storefront
-- Editorial hero with dark overlay, brand origin statement
+- Editorial hero with dark overlay and brand origin statement
 - Anti-greenwashing section — three evidence-backed differentiators with source citations
 - Brand origin timeline (600 BCE → today)
 - Category grid pulled from database
@@ -42,10 +44,10 @@ This repository is V1 — a complete, deployable storefront with cart, checkout,
 
 ### Category & Product Pages
 - Server-rendered category listing pages (`/category/[slug]`)
-- Product detail with image gallery, ingredient cards showing historical source + origin region + skin benefit
+- Product detail with ingredient cards showing historical source, origin region, and skin benefit
 - UK postcode delivery estimator — enter postcode, get region-specific delivery window and cost in real time
 - Add to cart with session-based persistence (no login required)
-- Reviews section with star breakdown and verified purchase badges
+- Reviews with star breakdown and verified purchase badges
 
 ### Cart & Checkout
 - Persistent cart via UUID session cookie (survives page refresh, no account needed)
@@ -53,7 +55,7 @@ This repository is V1 — a complete, deployable storefront with cart, checkout,
   - **Step 1** — Identity: Guest (name + email only) or Sign Up (creates account)
   - **Step 2** — Delivery: Address form with live postcode validation
   - **Step 3** — Review & Place: Full order summary, Cash on Delivery, order saved as `PENDING`
-- Order confirmation page with human-readable reference (e.g. `ARK-00123`) and delivery estimate
+- Order confirmation with human-readable reference (e.g. `ARK-00123`) and delivery estimate
 
 ### Admin Panel (`/admin`)
 - Dashboard: orders today, revenue MTD, low-stock alerts
@@ -64,148 +66,45 @@ This repository is V1 — a complete, deployable storefront with cart, checkout,
 
 ---
 
-## Data Model Highlights
+## Data Model — Design Decisions
 
-The schema has a few intentional decisions worth explaining:
+Coming from a PM background, what surprised me most was how much product thinking goes into data modelling. A few decisions I made consciously and learned from:
 
-**Money is stored in pence (integers).** `price: Int` means £24.99 is stored as `2499`. This completely avoids floating-point rounding errors — a real problem when you're doing subtotals across cart items.
+**Money stored in pence (integers), not pounds (decimals).** Floating-point arithmetic is unreliable for currency — `0.1 + 0.2` doesn't equal `0.3` in most programming languages. Storing `2499` instead of `24.99` eliminates that class of bug entirely. Simple rule: never trust a float with money.
 
-**Order shipping address is a JSON snapshot, not a foreign key.** `shippingAddress: Json` on `Order` means the delivery address is frozen at order time. If a user later edits their profile address, it doesn't silently change their order history.
+**Order shipping address is a snapshot, not a link.** Rather than saving a reference to a user's address, the order stores a frozen copy of it as JSON. If the user updates their address later, their past orders still show where the package was actually sent. This was a direct product instinct — data that matters to a user's history shouldn't change under them.
 
-**Ingredient is a shared library model.** Rather than storing ingredient info as a text blob per product, `Ingredient` is its own table linked via `ProductIngredient` with an `isFeatured` flag. This means historical source data is consistent across products and manageable from the admin panel.
+**Ingredients are a shared library, not copy-pasted text.** Each ingredient (turmeric, saffron, neem) lives in its own database record with its historical source, origin region, and skin benefit. Products link to ingredients rather than duplicating the text. When the historical note needs updating, you change it in one place and it reflects everywhere. A classic normalisation win that also makes the admin panel cleaner.
 
-**Cart uses anonymous session IDs.** `CartItem` has a `sessionId` (UUID stored in localStorage) rather than requiring login. The `@@unique([sessionId, productId])` constraint prevents duplicate line items — updating quantity uses an upsert.
+**Cart works without an account.** A UUID is generated in the browser and stored in localStorage. Cart items in the database are keyed to that ID. No login friction at the top of the funnel — a deliberate product decision, not just a technical one.
 
-**DeliveryZone is admin-configurable.** Delivery windows and costs live in the database, not in code. The admin panel exposes an editor so pricing can change without a deployment.
-
----
-
-## How It Was Built — The Real Journey
-
-This project was built without a local Node.js installation. All 59 source files were written directly and pushed to GitHub, with Vercel handling the build. That constraint exposed a series of real-world problems worth documenting.
-
-### Problem 1 — `next.config.ts` not supported on Node v24
-
-Next.js 14.2.x does not support TypeScript config files. The error was:
-
-```
-Configuring Next.js via 'next.config.ts' is not supported.
-Please replace the file with 'next.config.js' or 'next.config.mjs'
-```
-
-**Fix:** Deleted `next.config.ts`, created `next.config.mjs` using JSDoc type annotations instead of TypeScript imports:
-
-```js
-/** @type {import('next').NextConfig} */
-const nextConfig = { ... }
-export default nextConfig
-```
+**Delivery zones are admin-configurable.** Shipping windows and costs live in the database, not hardcoded in the app. A non-technical team member can update pricing from the admin panel without a deployment. That separation of content from code is something I hadn't thought about before starting this project.
 
 ---
 
-### Problem 2 — Seed script JSON quoting broken on zsh
+## What I Learned Building This
 
-The original `package.json` seed script passed `--compiler-options '{"module":"CommonJS"}'` inline. On zsh, the shell strips the inner quotes and `ts-node` gets malformed JSON.
+This was my first time taking a product idea all the way to a live deployment. A few things I didn't expect to matter as much as they did:
 
-**Fix:** Moved the compiler options into `package.json` root as a `ts-node` config key:
+### Full-stack means the full stack
 
-```json
-"ts-node": {
-  "compilerOptions": { "module": "CommonJS" }
-}
-```
+The application code is only part of the picture. I hit issues with configuration files (Next.js 14 doesn't support TypeScript config files — you need `.mjs`), shell quoting (zsh handles inline JSON differently from bash), and dependency versioning (locking `eslint-config-next` to match the Next.js version, not whatever `npm install` decides). None of this is in any tutorial. It's just what production feels like.
 
-Simplified the script to just:
+### Database connections need to be managed, not assumed
 
-```json
-"db:seed": "ts-node prisma/seed.ts"
-```
+Connecting a Next.js app (which spins up serverless functions per request) to PostgreSQL without care exhausts your database's connection limit quickly. Supabase uses PgBouncer — a connection pooler — which batches and reuses connections. But it comes with a constraint: it doesn't support PostgreSQL "prepared statements," which is Prisma's default. One flag in the connection string (`?pgbouncer=true`) solves it. The lesson: infrastructure has opinions, and understanding why matters more than just following setup guides.
 
----
+### Types are a communication tool
 
-### Problem 3 — Prisma "prepared statement does not exist" (PgBouncer)
+TypeScript kept catching things that weren't bugs yet but would have been. The most instructive: NextAuth's built-in `User` type doesn't include a `role` field — because that's a custom extension. TypeScript forced me to be explicit about the assumption ("this user object has a role") rather than letting it quietly fail at runtime. I came in thinking types were just about catching typos. They're actually about making your assumptions visible.
 
-Every Prisma query was failing with error code `26000`:
+### Deployment is its own discipline
 
-```
-prepared statement "s0" does not exist
-```
+The app worked locally. Then it didn't on Vercel, for three separate reasons — each one a different category of problem. Environment variables aren't deployed with your code (correctly — you don't want credentials in git). `NEXTAUTH_URL` needs to point to your actual deployed domain or auth breaks during the build itself. These aren't edge cases; they're standard deployment hygiene that you only learn by doing it.
 
-**Root cause:** Supabase's transaction pooler (port 6543) uses PgBouncer in transaction mode. PgBouncer doesn't support PostgreSQL prepared statements, which Prisma uses by default.
+### PM instincts translate
 
-**Fix:** Append `?pgbouncer=true` to the `DATABASE_URL`:
-
-```
-postgresql://...@aws-0-eu-west-1.pooler.supabase.com:6543/postgres?pgbouncer=true
-```
-
-The `DIRECT_URL` (port 5432, session pooler) is used by Prisma for migrations only and doesn't need this flag. This dual-URL setup is standard for Prisma + Supabase.
-
----
-
-### Problem 4 — Vercel build failing: `eslint-config-next` version conflict
-
-```
-npm error ERESOLVE could not resolve
-eslint-config-next@16.2.4 requires peer eslint@">=9.0.0"
-but project has eslint@8.57.1
-```
-
-**Root cause:** `package.json` had `"eslint-config-next": "^16.2.4"` — the Next.js 16 version — but the project uses Next.js 14 which ships with eslint@8.
-
-**Fix:** Pin to the matching version:
-
-```json
-"eslint-config-next": "14.2.5"
-```
-
----
-
-### Problem 5 — TypeScript error: `user.role` cast failing in NextAuth callback
-
-```
-Type error: Conversion of type 'User | AdapterUser' to type '{ role: string; }'
-may be a mistake because neither type sufficiently overlaps with the other.
-```
-
-**Root cause:** NextAuth's `User` type doesn't include `role` — it's a custom field. TypeScript rightly rejects the direct cast.
-
-**Fix:** Double-cast through `unknown`:
-
-```ts
-token.role = (user as unknown as { role: string }).role
-```
-
----
-
-### Problem 6 — Vercel `DATABASE_URL` missing at build time
-
-Vercel builds failed with:
-
-```
-error: Error validating datasource `db`: the URL must start with the protocol `postgresql://`
-```
-
-**Root cause:** `.env` is (correctly) gitignored. Environment variables need to be set explicitly in the Vercel dashboard under Settings → Environment Variables.
-
-**Fix:** Added `DATABASE_URL`, `DIRECT_URL`, `NEXTAUTH_SECRET`, and `NEXTAUTH_URL` as Vercel environment variables, then redeployed.
-
----
-
-### Problem 7 — `NEXTAUTH_URL` empty causes `Invalid URL` during static generation
-
-```
-TypeError: Invalid URL
-  at new URL (node:internal/url:819:25)
-```
-
-**Root cause:** NextAuth constructs callback URLs using `NEXTAUTH_URL`. If it's undefined during `next build`, the `new URL('')` call throws. The `/login` page was failing to prerender.
-
-**Fix:** Set `NEXTAUTH_URL` to the deployed Vercel URL in environment variables:
-
-```
-NEXTAUTH_URL=https://aarikka.vercel.app
-```
+The decisions that felt most natural were the product ones buried inside the architecture: don't let historical data change retroactively, don't require account creation to shop, make ops-level config (delivery pricing) editable without code. These aren't engineering insights — they're just good product thinking applied one layer deeper than a spec doc.
 
 ---
 
@@ -218,7 +117,7 @@ cd Aarikka-D2C-Skincare-Brand
 # Install dependencies
 npm install
 
-# Create .env (copy values from Supabase + generate NEXTAUTH_SECRET)
+# Create .env (see Environment Variables section below)
 cp .env.example .env
 
 # Push schema to database
@@ -288,9 +187,9 @@ prisma/
 
 ## What's Not In V1
 
-- Payment gateway (Stripe integration planned for V2)
+- Payment gateway (Stripe planned for V2)
 - Product filtering and sorting on category pages
-- Image uploads via admin panel (products use Unsplash URLs in V1)
+- Image uploads via admin (products use Unsplash URLs in V1)
 - Email notifications on order placement or status change
 - Customer account dashboard (order history, address book)
 
@@ -300,10 +199,10 @@ prisma/
 
 Hosted on **Vercel** (frontend) + **Supabase** (PostgreSQL). Vercel auto-deploys on every push to `main`.
 
-After deploy, run the seed once against the production database:
+After the first deploy, run the seed once against the production database:
 
 ```bash
 npm run db:seed
 ```
 
-This is a one-time step. The seed is idempotent for categories and ingredients (uses upsert) but will add duplicate products if run more than once — run it once on a fresh database.
+Run this once on a fresh database — it will add duplicate products if run again.
