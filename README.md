@@ -2,7 +2,7 @@
 
 A full-stack D2C skincare e-commerce website built with Next.js 14, PostgreSQL (Supabase), Prisma, and NextAuth. Live at **[aarikka.vercel.app](https://aarikka.vercel.app)**.
 
-> **Course project** — Built as a hands-on exercise for the [Advanced AI Product Management for PMs](https://www.pmcurve.com/program/advanced-ai-for-pms) program by PMCurve. A 12-week course designed for Product Managers to learn how to build and lead AI products — from foundational concepts to deployment. This project covers the "build it yourself" module: taking a product idea from requirements all the way to a live, working website.
+> **Course project** — Built as a hands-on exercise to build and lead AI products — from foundational concepts to deployment.
 
 ---
 
